@@ -180,6 +180,42 @@ https://github.com/Banhmipatee11/AES/tree/main
 <br>https://github.com/Yennguyen124/AES.git
 <br>https://github.com/user-attachments/assets/793e6c8e-2494-4ac3-ba02-15de590acd6c
 <br>https://github.com/user-attachments/assets/793e6c8e-2494-4ac3-ba02-15de590acd6c
+<br>https://github.com/leeminsiuuu/AES-File-Encryption-Decryption-?tab=readme-ov-file
+<br>https://github.com/trananhbang99999999/aes
+<br>https://github.com/ngocbach11314/AES_app.git
+<br>https://github.com/Danh091005/ASPNguyenThanhDanh.git
+<br>https://github.com/zhuzhixin1911/ThuatToanAES.git
+<br>https://github.com/NguyenDacDat05/NguyenDacDat1/tree/main
+<br>https://github.com/nguyentrandat17/Thuattuoandes.git
+<br>https://github.com/datnhincom/PhanDatAES.git
+<br>https://github.com/trongdong1605/trongdongAES/tree/main
+<br>https://github.com/Duc17017/c-c-b-i-t-p
+<br>https://github.com/ducls12/VDuc
+<br>https://github.com/Gienwoennuthan/BT-AES.git
+<br>https://github.com/haohaicotthehienolangson/AES.git
+<br>https://github.com/pth12052/aespth
+<br>https://github.com/minhhieucntt1707/AES_Cypher.git
+<br>https://github.com/my-hoen/Thuat-toan-ma-hoa-AES.git
+<br>https://github.com/HDuonggg/AES.git
+<br>https://github.com/duyhong2005/AES_GiaiMa
+<br>https://github.com/Hung17082005/ASE.git
+<br>https://github.com/nhuongg/Aes-Decrypt.git
+<br>https://github.com/khanh2005vf/AES.git
+<br>https://github.com/nguyenly29/web-AES.git
+<br>https://github.com/GaminTheBasket/AES.git
+<br>https://github.com/namtx53/NamAES.git
+<br>https://github.com/Dangyennhi/aes_encrypt_webapp.git.io.git
+<br>https://github.com/phuccdayynee/BaoMatThuatToanAES.git
+<br>https://github.com/MinhQuang1707/MinhQuang.git
+<br>https://github.com/tainguyenvn2004/thu-t-to-n-AES.git
+<br>https://github.com/Dang-Van-Thanh/Secure-AES-Tool-2025.git
+<br>https://github.com/Thuong1310/baitapAES
+<br>https://github.com/tien-nguyennnnn/web-aes/tree/main
+<br>https://github.com/vutrinh2005/aes
+<br>https://github.com/034205010457/truongaes
+<br>https://github.com/Tuan2401/Tuan17-07.git
+<br>https://github.com/phamquangvinh2506/25-06
+<br>https://github.com/user-attachments/assets/8122d387-4a6a-47c6-839d-ef4852da631d
 
 <h4 align="left">
    DES - KHÓA 17
