@@ -147,44 +147,47 @@
 |-----|------|
 | 1 | [Tệp đính kèm](https://github.com/user-attachments/assets/257f6e70-f3df-4f76-bef5-89743c310434) |
 
-<h4 align="left">
-   HASH FUNCTION - KHÓA 17
-</h4>
-https://github.com/TVLlam/SHA_TRUYEN_FILE.git
-<br>https://github.com/thuyetdeptrai/SHA
-<br>https://github.com/Lovanlong1210/SHA_TRUYEN-FILE.git
-<br>https://github.com/DiemManhNguyen/BT_Hash-Function.git
-<br>https://github.com/manhtb1107/SHA-256-DuyManh
-<br>https://github.com/hiepnguyen05/TruyenFileSHA-256
-<br>https://github.com/tranhauhuan452005/Truyen-File-Du-Lieu.git
-<br>https://github.com/thanh331/to-n-v-n.git
-<br>https://github.com/HOANGTHI2509/TruyenFile_SHA-256.git
-<br>https://github.com/Yennguyen124/TruyenFile_SHA256.git
-<br>https://github.com/YeNhi22/SHA-256.git
-<br>https://github.com/bngoc04/SHA-256.git
-<br>https://github.com/huyluong26/Hash_SHA256
-<br>https://github.com/minhson11/SHA-256
-<br>https://github.com/HoangNguyen111h/TruyenfileSHA-256
-<br>https://github.com/tomzumbi/SHA
-<br>https://github.com/HuyNG25/SHA256.git
-<br>https://github.com/ngocminhkien/SHA-256.git
-<br>https://github.com/vuchicong1771020108/news
-<br>https://github.com/buiducduong24/SHA-256.git
-<br>https://github.com/hhoangzone/SHA_BT
-<br>https://github.com/binhlo/ATBMTT.git
-<br>https://github.com/tuan9242/SHA_256
-<br>https://github.com/LamKheng/SHA_256
-<br>https://github.com/nhucccc/BTSHA.git
-<br>https://github.com/nhucccc/BTSHA.git
-<br>https://github.com/lehieu2999/SHA256
-<br>https://github.com/mc20t6/Ng_Minh_Chien.git
-<br>https://github.com/Banhmipatee11/SHA
-<br>https://github.com/tuanhiep23/truyenfiletoanven.git
-<br>https://github.com/PhiTruongGiang/bt_chuyen_file_voi_ham_bam.git
-<br>https://github.com/Trung010223/TruyenFileToanVen
-<br>https://github.com/tranduy157/TruyenFileToanVen
-<br>https://github.com/hoaphun2/LeDuyHoa-chuyenfile.git
-<br>https://github.com/NhatMinh1905/sha256
+# 🔐 HASH FUNCTION - KHÓA 17
+
+> Danh sách các repository ứng dụng hàm băm (SHA-256) để truyền file toàn vẹn của sinh viên khóa 17.
+
+| STT | Repository |
+|-----|------------|
+| 1 | [TVLlam/SHA_TRUYEN_FILE](https://github.com/TVLlam/SHA_TRUYEN_FILE.git) |
+| 2 | [thuyetdeptrai/SHA](https://github.com/thuyetdeptrai/SHA) |
+| 3 | [Lovanlong1210/SHA_TRUYEN-FILE](https://github.com/Lovanlong1210/SHA_TRUYEN-FILE.git) |
+| 4 | [DiemManhNguyen/BT_Hash-Function](https://github.com/DiemManhNguyen/BT_Hash-Function.git) |
+| 5 | [manhtb1107/SHA-256-DuyManh](https://github.com/manhtb1107/SHA-256-DuyManh) |
+| 6 | [hiepnguyen05/TruyenFileSHA-256](https://github.com/hiepnguyen05/TruyenFileSHA-256) |
+| 7 | [tranhauhuan452005/Truyen-File-Du-Lieu](https://github.com/tranhauhuan452005/Truyen-File-Du-Lieu.git) |
+| 8 | [thanh331/to-n-v-n](https://github.com/thanh331/to-n-v-n.git) |
+| 9 | [HOANGTHI2509/TruyenFile_SHA-256](https://github.com/HOANGTHI2509/TruyenFile_SHA-256.git) |
+| 10 | [Yennguyen124/TruyenFile_SHA256](https://github.com/Yennguyen124/TruyenFile_SHA256.git) |
+| 11 | [YeNhi22/SHA-256](https://github.com/YeNhi22/SHA-256.git) |
+| 12 | [bngoc04/SHA-256](https://github.com/bngoc04/SHA-256.git) |
+| 13 | [huyluong26/Hash_SHA256](https://github.com/huyluong26/Hash_SHA256) |
+| 14 | [minhson11/SHA-256](https://github.com/minhson11/SHA-256) |
+| 15 | [HoangNguyen111h/TruyenfileSHA-256](https://github.com/HoangNguyen111h/TruyenfileSHA-256) |
+| 16 | [tomzumbi/SHA](https://github.com/tomzumbi/SHA) |
+| 17 | [HuyNG25/SHA256](https://github.com/HuyNG25/SHA256.git) |
+| 18 | [ngocminhkien/SHA-256](https://github.com/ngocminhkien/SHA-256.git) |
+| 19 | [vuchicong1771020108/news](https://github.com/vuchicong1771020108/news) |
+| 20 | [buiducduong24/SHA-256](https://github.com/buiducduong24/SHA-256.git) |
+| 21 | [hhoangzone/SHA_BT](https://github.com/hhoangzone/SHA_BT) |
+| 22 | [binhlo/ATBMTT](https://github.com/binhlo/ATBMTT.git) |
+| 23 | [tuan9242/SHA_256](https://github.com/tuan9242/SHA_256) |
+| 24 | [LamKheng/SHA_256](https://github.com/LamKheng/SHA_256) |
+| 25 | [nhucccc/BTSHA](https://github.com/nhucccc/BTSHA.git) |
+| 26 | [lehieu2999/SHA256](https://github.com/lehieu2999/SHA256) |
+| 27 | [mc20t6/Ng_Minh_Chien](https://github.com/mc20t6/Ng_Minh_Chien.git) |
+| 28 | [Banhmipatee11/SHA](https://github.com/Banhmipatee11/SHA) |
+| 29 | [tuanhiep23/truyenfiletoanven](https://github.com/tuanhiep23/truyenfiletoanven.git) |
+| 30 | [PhiTruongGiang/bt_chuyen_file_voi_ham_bam](https://github.com/PhiTruongGiang/bt_chuyen_file_voi_ham_bam.git) |
+| 31 | [Trung010223/TruyenFileToanVen](https://github.com/Trung010223/TruyenFileToanVen) |
+| 32 | [tranduy157/TruyenFileToanVen](https://github.com/tranduy157/TruyenFileToanVen) |
+| 33 | [hoaphun2/LeDuyHoa-chuyenfile](https://github.com/hoaphun2/LeDuyHoa-chuyenfile.git) |
+| 34 | [NhatMinh1905/sha256](https://github.com/NhatMinh1905/sha256) |
+
 <h4 align="left">
    AES - KHÓA 17
 </h4>
