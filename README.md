@@ -43,8 +43,8 @@
     | **Đề tài 22** | Nguyễn Tiến Dũng, Nguyễn Minh Chiến, Bùi Đức Dương | Nguyễn Tiến Dũng: [:octocat: Github](https://github.com/nguyen42005/nguyen-dung1.git)<br>Nguyễn Minh Chiến: [:octocat: Github](https://github.com/mc20t6/BTL_ATBMTT.git)<br>Bùi Đức Dương: [:octocat: Github](https://github.com/buiducduong24/BTL_ATBMTT.git) |
   
 - #### CNTT 17-02
-    | Tên đề tài             | Người thực hiện     | Source code     | Nổi bật     |
-    | ---------------------- | --------------------| --------------- | ----------- |
+    | Tên đề tài             | Người thực hiện     | Source code     |
+    | ---------------------- | --------------------| --------------- |
     | Ứng dụng Triple DES và AES để bảo vệ thông tin nhạy cảm trong cơ sở dữ liệu | Vương Trọng Hải Quân, Lê Sơn Quang, Nguyễn Minh Hùng| [:octocat:github](https://github.com/HaiQuan17-02/NHOM1_BTL_ATBM)|
     | Ứng dụng bảo mật tin nhắn văn bản với mã hoá TripleDES và xác thực RSA| Nguyễn Thành Trung, Lương Quốc Bảo, Đoàn Đình Hậu| [:octocat:github](https://github.com/Trung1822/BTL_ATBMTT)|
     | Game “Giải mã kho báu”| Lê Anh Sơn, Nguyễn Trung Kiên, Đào Đức Phong| [:octocat:github](https://github.com/LEANHSON-1771020591/ATBM_BTL)|
