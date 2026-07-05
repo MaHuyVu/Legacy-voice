@@ -3,128 +3,324 @@ import socket
 import base64
 import json
 import time
+
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP, DES
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA512
 from Crypto.Util.Padding import unpad
 
-# Địa chỉ và cổng lắng nghe
-HOST = '127.0.0.1'
+HOST = "127.0.0.1"
 PORT = 65432
 
-# Bước khởi tạo khóa RSA cho Receiver (chạy một lần)
-if not os.path.exists('receiver_private.pem'):
+OUTPUT_FILE = "received_voice.wav"
+
+# =====================================
+# Tạo khóa RSA cho Receiver
+# =====================================
+
+if not os.path.exists("receiver_private.pem"):
+
     key = RSA.generate(2048)
-    with open('receiver_private.pem', 'wb') as f:
+
+    with open("receiver_private.pem", "wb") as f:
         f.write(key.export_key())
-    with open('receiver_public.pem', 'wb') as f:
+
+    with open("receiver_public.pem", "wb") as f:
         f.write(key.publickey().export_key())
-    print('Receiver: Đã tạo cặp khóa RSA.')
+
+    print("Receiver: Đã tạo cặp khóa RSA.")
+
     time.sleep(2)
 
-# Bắt đầu lắng nghe kết nối từ Sender
+# =====================================
+# Chờ Sender kết nối
+# =====================================
+
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+
     s.bind((HOST, PORT))
+
     s.listen(1)
-    print(f'Receiver: Đợi kết nối tại {HOST}:{PORT}...')
-    time.sleep(2)
+
+    print(f"Receiver: Đợi kết nối tại {HOST}:{PORT}...")
+
     conn, addr = s.accept()
+
     with conn:
-        print('Receiver: Đã kết nối với', addr)
+
+        print("Receiver: Đã kết nối với", addr)
+
         time.sleep(2)
 
-        # Bước 1: Handshake đơn giản
-        print('Receiver: Đang thực hiện BƯỚC 1 - Handshake...')
-        data = conn.recv(5)
-        if data == b'HELLO':
-            print('Receiver: Nhận HELLO từ Sender')
-            time.sleep(2)
-            conn.sendall(b'READY')
-            print('Receiver: Gửi READY cho Sender')
-            time.sleep(2)
-        else:
-            print('Receiver: Handshake không hợp lệ')
-            time.sleep(2)
-            conn.close()
+        # -----------------------------
+        # Handshake
+        # -----------------------------
+
+        print("Receiver: Đang Handshake...")
+
+        hello = conn.recv(5)
+
+        if hello != b"HELLO":
+
+            print("Handshake lỗi")
+
             exit()
 
-        # Bước 2: Gửi public key RSA của Receiver
-        print('Receiver: Đang thực hiện BƯỚC 2 - Gửi PublicKey RSA...')
-        pub_R = open('receiver_public.pem', 'rb').read()
-        conn.sendall(len(pub_R).to_bytes(4, 'big') + pub_R)
-        print('Receiver: Đã gửi PublicKey_R cho Sender')
+        conn.sendall(b"READY")
+
+        print("Receiver: READY")
+
         time.sleep(2)
 
-        # Nhận gói tin JSON từ Sender
-        print('Receiver: Đang nhận dữ liệu từ Sender...')
-        size = int.from_bytes(conn.recv(4), 'big')
-        packet = conn.recv(size)
+        # -----------------------------
+        # Gửi Public Key
+        # -----------------------------
+
+        pub = open(
+            "receiver_public.pem",
+            "rb"
+        ).read()
+
+        conn.sendall(
+
+            len(pub).to_bytes(4, "big")
+
+            + pub
+
+        )
+
+        print("Receiver: Đã gửi Public Key")
+
+        time.sleep(2)
+
+        # -----------------------------
+        # -----------------------------
+        # Nhận Packet
+        # -----------------------------
+
+        size = int.from_bytes(
+            conn.recv(4),
+            "big"
+        )
+
+        packet = b""
+
+        while len(packet) < size:
+
+            chunk = conn.recv(
+                min(4096, size - len(packet))
+            )
+
+            if not chunk:
+                break
+
+            packet += chunk
+
+        print(f"Receiver: Đã nhận {len(packet)}/{size} bytes")
+
         data = json.loads(packet)
-        esk = base64.b64decode(data['esk'])  # Khóa phiên đã được mã hóa
-        sig = base64.b64decode(data['sig'])  # Chữ ký của metadata
-        iv = base64.b64decode(data['iv'])    # Tham số khởi tạo (nếu có)
-        cipher = base64.b64decode(data['cipher'])
-        hash_orig = data['hash']             # Giá trị băm gốc
 
-        # Load khóa RSA
-        priv_R = RSA.import_key(open('receiver_private.pem', 'rb').read())
-        pub_S = RSA.import_key(open('sender_public.pem', 'rb').read())
+        esk = base64.b64decode(data["esk"])
+        sig = base64.b64decode(data["sig"])
+        iv = base64.b64decode(data["iv"])
+        cipher = base64.b64decode(data["cipher"])
 
-        # Bước 3: Giải mã SessionKey
-        print('Receiver: Đang thực hiện BƯỚC 3 - Giải mã SessionKey...')
-        session_key = PKCS1_OAEP.new(priv_R).decrypt(esk)
-        print('Receiver: Giải mã SessionKey thành công')
+        metadata = data["metadata"]
+        hash_sender = data["hash"]
+
+        print("Receiver: Đã nhận dữ liệu")
+
         time.sleep(2)
 
-        # Bước 3: Xác thực chữ ký metadata
-        print('Receiver: Đang thực hiện BƯỚC 3 - Xác thực chữ ký metadata...')
-        metadata = data['metadata'].encode()
+        # -----------------------------
+        # Load RSA Keys
+        # -----------------------------
+
+        private_key = RSA.import_key(
+            open(
+                "receiver_private.pem",
+                "rb"
+            ).read()
+        )
+
+        sender_public = RSA.import_key(
+            open(
+                "sender_public.pem",
+                "rb"
+            ).read()
+        )
+
+        # -----------------------------
+        # Verify Signature
+        # -----------------------------
+
         try:
-            h_meta = SHA512.new(metadata)
-            pkcs1_15.new(pub_S).verify(h_meta, sig)
-            print('Receiver: Chữ ký metadata hợp lệ')
-            time.sleep(2)
-        except (ValueError, TypeError):
-            print('Receiver: Chữ ký metadata không hợp lệ!')
-            time.sleep(2)
+
+            h = SHA512.new(
+
+                metadata.encode()
+
+            )
+
+            pkcs1_15.new(
+
+                sender_public
+
+            ).verify(
+
+                h,
+
+                sig
+
+            )
+
+            print("Receiver: Signature hợp lệ")
+
+        except Exception:
+
+            print("Receiver: Signature lỗi")
+
+            conn.sendall(b"NACK")
+
             exit()
 
-        # Bước 3: Kiểm tra tính toàn vẹn
-        print('Receiver: Đang thực hiện BƯỚC 3 - Kiểm tra tính toàn vẹn dữ liệu...')
-        h_cipher = SHA512.new(cipher).hexdigest()
-        if h_cipher != hash_orig:
-            print('Receiver: Kiểm tra toàn vẹn thất bại')
-            time.sleep(2)
-            conn.sendall(b'NACK')
-            exit()
-        print('Receiver: Kiểm tra toàn vẹn thành công')
         time.sleep(2)
 
-       # Bước 3: Giải mã dữ liệu và lưu file
-print('Receiver: Đang thực hiện BƯỚC 3 - Giải mã và lưu file...')
+                # -----------------------------
+        # Giải mã Session Key
+        # -----------------------------
 
-plaintext = DES.new(session_key, DES.MODE_CBC, iv).decrypt(cipher)
-plaintext = unpad(plaintext, DES.block_size)
+        session_key = PKCS1_OAEP.new(
 
-# Lưu file âm thanh
-output_file = "received_voice.wav"
+            private_key
 
-with open(output_file, "wb") as f:
-    f.write(plaintext)
+        ).decrypt(
 
-print(f"Receiver: Đã lưu file {output_file}")
-time.sleep(2)
+            esk
 
-# (Tùy chọn) Phát file âm thanh sau khi nhận
-try:
-    import winsound
-    winsound.PlaySound(output_file, winsound.SND_FILENAME)
-    print("Receiver: Đang phát file âm thanh...")
-except:
-    print("Receiver: Không thể phát âm thanh (bỏ qua).")
+        )
 
-# Phản hồi ACK cho Sender
-conn.sendall(b'ACK')
-print('Receiver: Gửi ACK (Nhận thành công)')
-time.sleep(2)
+        print("Receiver: Đã giải mã SessionKey")
+
+        time.sleep(2)
+
+        # -----------------------------
+        # Kiểm tra Hash
+        # -----------------------------
+
+        hash_receiver = SHA512.new(
+
+            cipher
+
+        ).hexdigest()
+
+        if hash_receiver != hash_sender:
+
+            print("===================================")
+            print("Receiver: HASH KHÔNG HỢP LỆ")
+            print("===================================")
+
+            conn.sendall(b"NACK")
+
+            exit()
+
+        print("Receiver: Hash hợp lệ")
+
+        time.sleep(2)
+
+        # -----------------------------
+        # DES Decrypt
+        # -----------------------------
+
+        plaintext = DES.new(
+
+            session_key,
+
+            DES.MODE_CBC,
+
+            iv
+
+        ).decrypt(
+
+            cipher
+
+        )
+
+        plaintext = unpad(
+
+            plaintext,
+
+            DES.block_size
+
+        )
+        print("Receiver: DES Decrypt thành công")
+
+        print(f"Cipher length = {len(cipher)} bytes")
+        print(f"Plaintext length = {len(plaintext)} bytes")
+
+        time.sleep(2)
+
+        
+
+        # -----------------------------
+        # Lưu file âm thanh
+        # -----------------------------
+
+        with open(
+
+            OUTPUT_FILE,
+
+            "wb"
+
+        ) as f:
+
+            f.write(
+
+                plaintext
+
+            )
+
+        print(f"Receiver: Đã lưu {OUTPUT_FILE}")
+
+        time.sleep(2)
+
+        # -----------------------------
+        # Phát âm thanh (Windows)
+        # -----------------------------
+
+        try:
+
+            import winsound
+
+            winsound.PlaySound(
+
+                OUTPUT_FILE,
+
+                winsound.SND_FILENAME
+
+            )
+
+            print("Receiver: Đang phát âm thanh...")
+
+        except Exception as e:
+
+            print("Receiver: Không thể phát âm thanh:", e)
+
+        # -----------------------------
+        # Gửi ACK
+        # -----------------------------
+
+        conn.sendall(
+
+            b"ACK"
+
+        )
+
+        print("===================================")
+        print("Receiver: Gửi ACK thành công")
+        print("===================================")
+
+        time.sleep(2)
+
+print("\nReceiver kết thúc.")
