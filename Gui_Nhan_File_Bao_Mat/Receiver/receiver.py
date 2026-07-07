@@ -9,6 +9,7 @@ from Crypto.Cipher import PKCS1_OAEP, AES
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA512
 from Crypto.Util.Padding import unpad
+from aes_gcm import decrypt_file
 
 HOST = "0.0.0.0"
 PORT = 65432
@@ -122,12 +123,20 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
         data = json.loads(packet)
 
+        mode = data["mode"]
+
         esk = base64.b64decode(data["esk"])
         sig = base64.b64decode(data["sig"])
-        iv = base64.b64decode(data["iv"])
+
         cipher = base64.b64decode(data["cipher"])
 
         metadata = data["metadata"]
+
+        if mode == "MODERN":
+            nonce = base64.b64decode(data["nonce"])
+            tag = base64.b64decode(data["tag"])
+        else:
+            iv = base64.b64decode(data["iv"])
 
         print("Receiver: Đã nhận dữ liệu")
 
@@ -247,31 +256,36 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         time.sleep(2)
 
         # -----------------------------
-        # AES-256-CBC Decrypt
+        # Decrypt
         # -----------------------------
 
-        plaintext = AES.new(
+        if mode == "MODERN":
 
-            session_key,
+            plaintext = decrypt_file(
+                cipher,
+                session_key,
+                nonce,
+                tag
+            )
 
-            AES.MODE_CBC,
+            print("Receiver: AES-GCM Decrypt thành công")
 
-            iv
+        else:
 
-        ).decrypt(
+            from Crypto.Cipher import DES
 
-            cipher
+            plaintext = DES.new(
+                session_key,
+                DES.MODE_CBC,
+                iv
+            ).decrypt(cipher)
 
-        )
+            plaintext = unpad(
+                plaintext,
+                DES.block_size
+            )
 
-        plaintext = unpad(
-
-            plaintext,
-
-            AES.block_size
-
-        )
-        print("Receiver: AES Decrypt thành công")
+            print("Receiver: DES Decrypt thành công")
 
         print(f"Cipher length = {len(cipher)} bytes")
         print(f"Plaintext length = {len(plaintext)} bytes")
@@ -282,37 +296,18 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         # Lưu file âm thanh
         # -----------------------------
 
-        with open(
-
-            OUTPUT_FILE,
-
-            "wb"
-
-        ) as f:
-
-            f.write(
-
-                plaintext
-
-            )
+        with open(OUTPUT_FILE, "wb") as f:
+            f.write(plaintext)
 
         print(f"Receiver: Đã lưu {OUTPUT_FILE}")
 
         time.sleep(2)
 
         # -----------------------------
-        # Gửi ACK ngay sau khi dữ liệu đã được
-        # xác thực + giải mã + lưu thành công.
-        # Gửi trước bước phát âm thanh để Sender
-        # không bị treo/chờ nếu máy Receiver không
-        # có thiết bị audio khả dụng.
+        # Gửi ACK
         # -----------------------------
 
-        conn.sendall(
-
-            b"ACK"
-
-        )
+        conn.sendall(b"ACK")
 
         print("===================================")
         print("Receiver: Gửi ACK thành công")
@@ -321,7 +316,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         time.sleep(2)
 
         # -----------------------------
-        # Phát âm thanh (đa nền tảng, không bắt buộc)
+        # Phát âm thanh
         # -----------------------------
 
         try:
@@ -332,23 +327,28 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
                 import winsound
 
-                winsound.PlaySound(OUTPUT_FILE, winsound.SND_FILENAME)
+                winsound.PlaySound(
+                    OUTPUT_FILE,
+                    winsound.SND_FILENAME
+                )
 
             else:
 
                 import sounddevice as sd
                 import soundfile as sf
 
-                wav_data, samplerate = sf.read(OUTPUT_FILE, dtype="int16")
+                wav_data, samplerate = sf.read(
+                    OUTPUT_FILE,
+                    dtype="int16"
+                )
 
                 sd.play(wav_data, samplerate)
-
                 sd.wait()
 
             print("Receiver: Đang phát âm thanh...")
 
         except Exception as e:
 
-            print("Receiver: Không thể phát âm thanh (bỏ qua):", e)
+            print("Receiver: Không thể phát âm thanh:", e)
 
-print("\nReceiver kết thúc.")
+        print("\nReceiver kết thúc.")

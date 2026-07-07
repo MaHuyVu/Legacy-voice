@@ -5,20 +5,40 @@ import socket
 import base64
 import json
 import time
+
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP, AES
+from aes_gcm import encrypt_file
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA512
 from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import pad
+
 import tkinter as tk
 from tkinter import messagebox
 
 import record_audio_util
 
-print(record_audio_util)
-print(record_audio_util.__file__)
-print(hasattr(record_audio_util, "record_audio"))
+MODE = "LEGACY"
+print("=" * 45)
+print(" Legacy Voice Encryption")
+print("=" * 45)
+print("1. Legacy Mode (DES)")
+print("2. Modern Mode (AES-GCM)")
+print()
+
+choice = input("Select mode (1/2): ")
+
+if choice == "1":
+    MODE = "LEGACY"
+    print("\n⚠ WARNING")
+    print("DES is deprecated.")
+    print("This mode is for backward compatibility only.\n")
+else:
+    MODE = "MODERN"
+    print("\nModern Mode selected.")
+    print("Encryption: AES-GCM")
+    print("Authentication: RSA Signature\n")
 # Địa chỉ và cổng kết nối đến Receiver
 # Có thể truyền IP của Receiver qua tham số dòng lệnh: python3 sender.py <IP_Receiver>
 HOST = sys.argv[1] if len(sys.argv) > 1 else '127.0.0.1'
@@ -26,9 +46,9 @@ PORT = 65432
 
 # File âm thanh cần gửi
 # File âm thanh cần gửi
-import record_audio_util
 
-import os
+
+
 
 FILE_NAME = "voice.wav.wav"
 
@@ -148,31 +168,52 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
         plaintext = f.read()
 
-    print(f"Sender: Đọc {len(plaintext)} bytes")
+        print(f"Sender: Đọc {len(plaintext)} bytes")
 
-    time.sleep(2)
+        time.sleep(2)
 
     # -----------------------
-    # AES-256-CBC Encrypt
+    # Encrypt Audio
     # -----------------------
 
-    iv = get_random_bytes(16)
+    if MODE == "LEGACY":
 
-    cipher = AES.new(
-        session_key,
-        AES.MODE_CBC,
-        iv
-    ).encrypt(
-        pad(
-            plaintext,
-            AES.block_size
+        print("Legacy Mode: DES Encryption")
+
+        from Crypto.Cipher import DES
+
+        session_key = get_random_bytes(8)
+
+        encrypted_session_key = PKCS1_OAEP.new(pub_R).encrypt(session_key)
+
+        iv = get_random_bytes(8)
+
+        des = DES.new(
+            session_key,
+            DES.MODE_CBC,
+            iv
         )
-    )
 
-    print("Sender: AES Encrypt thành công")
+        cipher = des.encrypt(
+            pad(
+                plaintext,
+                DES.block_size
+            )
+        )
+
+    else:
+
+        print("Modern Mode: AES-GCM Encryption")
+
+        result = encrypt_file(plaintext, session_key)
+
+        cipher = result["ciphertext"]
+        nonce = result["nonce"]
+        tag = result["tag"]
+
+        print("AES-GCM Encrypt thành công")
 
     time.sleep(2)
-
     # -----------------------
     # SHA512 Hash của ciphertext
     # -----------------------
@@ -206,25 +247,31 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
     packet = {
 
-        "esk": base64.b64encode(
-            encrypted_session_key
-        ).decode(),
+    "mode": MODE,
 
-        "sig": base64.b64encode(
-            signature
-        ).decode(),
+    "esk": base64.b64encode(
+        encrypted_session_key
+    ).decode(),
 
-        "metadata": metadata,
+    "sig": base64.b64encode(
+        signature
+    ).decode(),
 
-        "iv": base64.b64encode(
-            iv
-        ).decode(),
+    "metadata": metadata,
 
-        "cipher": base64.b64encode(
-            cipher
-        ).decode(),
+    
+    "cipher": base64.b64encode(
+        cipher
+    ).decode(),
+}
+    if MODE == "LEGACY":
 
-    }
+        packet["iv"] = base64.b64encode(iv).decode()
+
+    else:
+
+        packet["nonce"] = base64.b64encode(nonce).decode()
+        packet["tag"] = base64.b64encode(tag).decode()
 
     packet = json.dumps(packet).encode()
 
