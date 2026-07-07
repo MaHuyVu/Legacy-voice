@@ -119,34 +119,97 @@ pip install pycryptodome
 
 # 🚀 Hướng dẫn chạy chương trình
 
-## Bước 1
+## Bước 1: Mở Terminal
 
-Khởi động Receiver
-
-```bash
-python receiver.py
-```
-
-hoặc
+Di chuyển đến thư mục **Legacy-voice**:
 
 ```bash
-python receiver_legacy.py
+cd F:\HocCNTT-1802\ATBMTT\Legacy-voice
 ```
 
 ---
 
-## Bước 2
-
-Khởi động Sender
+## Bước 2: Khởi động Receiver
 
 ```bash
-python sender.py <IP_Receiver>
+cd Gui_Nhan_File_Bao_Mat\Receiver
+py receiver.py
 ```
 
-hoặc
+Chương trình sẽ hiển thị:
+
+```text
+Receiver: Đợi kết nối tại 0.0.0.0:65432...
+```
+
+---
+
+## Bước 3: Mở Terminal mới
+
+Quay lại thư mục gốc:
 
 ```bash
-python sender_legacy.py <IP_Receiver>
+cd ..
+cd Sender
+```
+
+hoặc mở Terminal mới tại thư mục **Legacy-voice** rồi chạy:
+
+```bash
+cd Gui_Nhan_File_Bao_Mat\Sender
+py sender.py
+```
+
+---
+
+## Bước 4: Chọn chế độ mã hóa
+
+```text
+=========================================
+ Legacy Voice Encryption
+=========================================
+1. Legacy Mode (DES)
+2. Modern Mode (AES-GCM)
+
+Select mode (1/2):
+```
+
+- Nhập **1** để sử dụng **Legacy Mode (DES)**.
+- Nhập **2** để sử dụng **Modern Mode (AES-GCM)**.
+
+---
+
+## Bước 5: Gửi file âm thanh
+
+Chương trình sẽ hỏi:
+
+```text
+Bạn có muốn ghi âm mới không? (y/n):
+```
+
+- **y** → Ghi âm mới.
+- **n** → Sử dụng file `voice.wav` có sẵn.
+
+---
+
+## Kết quả
+
+Nếu truyền thành công:
+
+**Sender**
+
+```text
+Sender: Đã gửi thành công
+Sender: Receiver xác nhận thành công
+```
+
+**Receiver**
+
+```text
+Receiver: AES-GCM Decrypt thành công
+Receiver: Đã lưu received_voice.wav
+Receiver: Gửi ACK thành công
+Receiver: Đang phát âm thanh...
 ```
 
 ---
